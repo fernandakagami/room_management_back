@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FeatureController;
+use App\Http\Controllers\RoomController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/feature', [FeatureController::class, 'index']);
 Route::post('/feature', [FeatureController::class, 'store']);
 Route::delete('/feature/{id}', [FeatureController::class, 'destroy']);
+
+Route::get('/room', [RoomController::class, 'index']);
+Route::post('/room', [RoomController::class, 'store']);
+Route::delete('/room/{id}', [RoomController::class, 'destroy']);
