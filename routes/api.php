@@ -22,8 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/feature', [FeatureController::class, 'index']);
 Route::post('/feature', [FeatureController::class, 'store']);
+Route::put('/feature/{id}', [FeatureController::class, 'update']);
 Route::delete('/feature/{id}', [FeatureController::class, 'destroy']);
 
 Route::get('/room', [RoomController::class, 'index']);
 Route::post('/room', [RoomController::class, 'store']);
+Route::put('/room/{id}', [RoomController::class, 'update']);
 Route::delete('/room/{id}', [RoomController::class, 'destroy']);
+

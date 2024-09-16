@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Room;
+use App\Models\Feature;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
 
 class RoomController extends Controller
 {
@@ -14,7 +17,9 @@ class RoomController extends Controller
      */
     public function index()
     {
-        return Room::all();
+        $room = Room::with('features')->get();
+    
+        return response($room, 200); 
     }
 
     /**
@@ -29,21 +34,23 @@ class RoomController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [            
-            'name' => 'required|string|max:255|unique:rooms',
-            'features' => 'present|array', "features.*" => 'exists:features,id' 
+    {        
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255|unique:rooms',            
+            'features' => 'required|array', // Expecting an array of feature IDs
+            'features.*' => 'exists:features,id', // Each feature ID must exist in the features table
         ]);
 
         if ($validator->fails())
         {
             return response($validator->errors(), 500);
         }
-         
+                 
+        $room = Room::create(['name' => $request->name]);
         
-        $feature = Room::create($request->all());      
+        $room->features()->attach($request->features);
         
-        return response($feature, 200);  
+        return response($room, 200);  
     }
 
     /**
@@ -65,9 +72,27 @@ class RoomController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Room $room)
+    public function update(Request $request, int $id)
     {
-        //
+        $room = Room::findOrFail($id);
+        
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255|unique:rooms,name,' . $id,
+            'features' => 'required|array', // Expecting an array of feature IDs
+            'features.*' => 'exists:features,id', // Each feature ID must exist in the features table
+        ]);
+
+        if ($validator->fails())
+        {
+            return response($validator->errors(), 500);
+        }
+                 
+        $room->name = $request->input('name');
+        $room->save();
+
+        $room->features()->sync($request->input('features'));
+        
+        return response($room, 200);  
     }
 
     /**

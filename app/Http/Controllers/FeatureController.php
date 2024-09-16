@@ -64,9 +64,24 @@ class FeatureController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Feature $feature)
+    public function update(Request $request, int $id)
     {
-        //
+        $feature = Feature::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [            
+            'name' => 'required|string|max:255|unique:features',                    
+        ]);
+
+        if ($validator->fails())
+        {
+            return response($validator->errors(), 500);
+        }
+         
+        
+        $feature->name = $request->input('name');
+        $feature->save();
+        
+        return response($feature, 200);  
     }
 
     /**
