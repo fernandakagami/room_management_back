@@ -30,8 +30,9 @@ Route::get('/room', [RoomController::class, 'index']);
 Route::post('/room', [RoomController::class, 'store']);
 Route::put('/room/{id}', [RoomController::class, 'update']);
 Route::delete('/room/{id}', [RoomController::class, 'destroy']);
-
-Route::get('/room/{id}/schedule', [ScheduleController::class, 'index']);
 Route::post('/room/{id}/schedule', [ScheduleController::class, 'store']);
-Route::put('/room/{id}/{schedule/{scheduleId}', [ScheduleController::class, 'update']);
-Route::delete('/room/{id}/schedule/{scheduleId}', [ScheduleController::class, 'destroy']);
+Route::put('/room/{id}/schedule/{scheduleId}', [ScheduleController::class, 'update']);
+
+Route::get('/schedule', [ScheduleController::class, 'index']);
+Route::get('/schedule/{id}', [ScheduleController::class, 'show']);
+Route::delete('/schedule/{id}', [ScheduleController::class, 'destroy']);

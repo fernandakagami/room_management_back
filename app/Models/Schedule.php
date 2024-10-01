@@ -12,7 +12,7 @@ class Schedule extends Model
 
     protected $fillable = ['room_id', 'start_time', 'end_time', 'title'];
 
-    public function rooms(): BelongsTo
+    public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class);
     }
