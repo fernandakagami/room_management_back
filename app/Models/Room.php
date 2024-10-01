@@ -16,7 +16,7 @@ class Room extends Model
     
     public function features(): BelongsToMany
     {
-        return $this->belongsToMany(Feature::class, 'room_feature');
+        return $this->belongsToMany(Feature::class, 'room_feature', 'room_id', 'feature_id');
     }
 
     public function schedules(): HasMany

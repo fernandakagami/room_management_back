@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Room;
+use App\Models\Schedule;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
-
 
 class RoomController extends Controller
 {
@@ -99,6 +98,14 @@ class RoomController extends Controller
      */
     public function destroy(int $id)
     {
+        $exists = Schedule::whereHas('room', function ($query) use ($id) {
+            $query->where('rooms.id', $id);
+        })->exists();
+                
+        if ($exists) {
+            return response()->json(['error' => 'This room has a schedule'], 422);
+        }
+
         $feature= Room::destroy($id);
         return response($feature, 200);
     }
