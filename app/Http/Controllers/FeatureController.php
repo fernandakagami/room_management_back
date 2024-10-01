@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Feature;
+use App\Models\Room;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -89,7 +91,15 @@ class FeatureController extends Controller
      */
     public function destroy(int $id)
     {
-        $feature= Feature::destroy($id);
+        $exists = Room::whereHas('features', function ($query) use ($id) {
+            $query->where('features.id', $id);
+        })->exists();
+                
+        if ($exists) {
+            return response()->json(['error' => 'This feature is used in a room'], 422);
+        }
+
+        $feature = Feature::destroy($id);
         return response($feature, 200);
     }
 }
